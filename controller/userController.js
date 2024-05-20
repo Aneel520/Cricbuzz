@@ -1,7 +1,7 @@
 const sequelize = require('../config/index')
 const UserDetails = require('../models/userModel')
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const UserController ={
     async getUserDetails(req,res){
@@ -29,9 +29,8 @@ const UserController ={
                     username:username,
                     password:password_hash,
                     email:email,
-                    role:role
                 })
-                res.status(200).json(result)
+                res.status(200).json({"status": "Admin Account successfully created","status_code": 200,"user_id":result.user_id})
             }
             else{
                 res.status(400).send("User already exists")
@@ -42,9 +41,9 @@ const UserController ={
             console.log("Error in add user", err);
         }
     },
-    async  loginUser(req, res) {
+    async  loginAdmin(req, res) {
         try {
-          const { username, password_hash } = req.body;
+          const { username, password } = req.body;
           
           const user = await UserDetails.findOne({ 
             where:{
@@ -52,15 +51,18 @@ const UserController ={
             }
            });
           if (!user) {
-            return res.status(401).send({ error: 'Invalid username or password' });
+            return res.status(401).send({ "status": "Incorrect username/password provided. Please retry","status_code": 401 });
           }
         //   const isPasswordMatch = await user.comparePassword(password_hash);
-          const isPasswordMatched = await bcrypt.compare(password_hash, user.password_hash)
+          const isPasswordMatched = await bcrypt.compare(password, user.password)
           if (!isPasswordMatched) {
-            return res.status(401).send({ error: 'Invalid username or password' });
+            return res.status(401).send({ "status": "Incorrect username/password provided. Please retry","status_code": 401});
           }
-          const token = jwt.sign({ id: user.id }, '1000');
-          res.send({ token });
+          const token = jwt.sign({ id: user.user_id }, '1000');
+          res.send({ "status": "Login successful",
+          "status_code": 200,
+          "user_id": user.user_id,
+          "access_token": token });
         } catch (err) {
           console.error(err);
           res.status(500).send({ error: 'Login failed' });

@@ -1,27 +1,31 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../config/index')
 
-const UserDetails = sequelize.define('users',{
-    user_id:{
+const MatchDetails = sequelize.define('match_details',{
+    match_id:{
         type:DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true 
     },
-    username:{
+    team_1:{
         type:DataTypes.TEXT,
         allowNull:false
     },
-    password:{
+    team_2:{
         type:DataTypes.TEXT,
         allowNull:false
     },
-    email:{
+    venue:{
         type:DataTypes.TEXT,
+        allowNull:false
+    },
+    date:{
+        type:DataTypes.DATE,
         allowNull:false
     }
 },{
     timestamps: false 
 })
 
-module.exports = UserDetails;
+module.exports = MatchDetails;

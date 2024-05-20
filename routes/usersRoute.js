@@ -6,6 +6,7 @@ router.use(express.json())
 
 
 router.get('/users',UserController.getUserDetails);
-router.post('/register-user',UserController.registerUser);
+router.post('/signup',UserController.registerUser);
+router.post('/login',UserController.loginAdmin);
 
 module.exports = router;
